@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Strength</title>
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1c1c1e" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Strength">
+<link rel="manifest" href="manifest.json">
+<style>
+
+/* ── CSS Variables ── */
+:root {
+  --bg:          #f2f2f7;
+  --card:        #ffffff;
+  --border:      #e0e0e5;
+  --text:        #111111;
+  --muted:       #6e6e73;
+  --accent:      #007AFF;
+  --accent-tap:  #0a84ff;
+  --green:       #34c759;
+  --orange:      #ff9500;
+  --red:         #ff3b30;
+  --purple:      #af52de;
+  --cell-empty:  #e5e5ea;
+  --row-alt:     #f9f9fb;
+  --toast-bg:    #1c1c1e;
+  --toast-text:  #f2f2f7;
+  --btn-sec:     #e8f0fe;
+  --btn-sec-txt: #0a84ff;
+  --danger-bg:   #fff0ee;
+  --danger-txt:  #d93025;
+  --green-bg:    #eaffef;
+  --green-txt:   #188038;
+  --input-bg:    #ffffff;
+  --input-border:#c8c8cd;
+  --header-bg:   #ffffff;
+  --tab-bg:      #ffffff;
+  --shadow:      0 1px 3px rgba(0,0,0,.07);
+  --radius:      14px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:          #1c1c1e;
+    --card:        #2c2c2e;
+    --border:      #3a3a3c;
+    --text:        #f2f2f7;
+    --muted:       #8e8e93;
+    --cell-empty:  #3a3a3c;
+    --row-alt:     #262628;
+    --toast-bg:    #f2f2f7;
+    --toast-text:  #1c1c1e;
+    --btn-sec:     #1e2d45;
+    --btn-sec-txt: #4da6ff;
+    --danger-bg:   #3a1a18;
+    --danger-txt:  #ff6b61;
+    --green-bg:    #1a2e20;
+    --green-txt:   #4cd974;
+    --input-bg:    #3a3a3c;
+    --input-border:#525255;
+    --header-bg:   #1c1c1e;
+    --tab-bg:      #2c2c2e;
+    --shadow:      0 1px 3px rgba(0,0,0,.25);
+    --green:       #30d158;
+    --orange:      #ff9f0a;
+    --red:         #ff453a;
+  }
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  margin: 0; background: var(--bg); color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Layout ── */
+header {
+  padding: 14px 16px;
+  font-size: 19px; font-weight: 700;
+  text-align: center;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 5;
+}
+.container { padding: 12px 16px; padding-bottom: 90px; }
+
+/* ── Tabs ── */
+.tabs {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  display: flex; background: var(--tab-bg);
+  border-top: 1px solid var(--border); z-index: 10;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.tab {
+  flex: 1; padding: 10px 4px 8px; text-align: center;
+  font-size: 11px; cursor: pointer; color: var(--muted);
+  -webkit-tap-highlight-color: transparent;
+}
+.tab-icon { font-size: 20px; display: block; line-height: 1; }
+.tab.active { color: var(--accent-tap); }
+.tab.active .tab-icon { transform: scale(1.1); }
+
+/* ── Cards ── */
+.card {
+  background: var(--card); border-radius: var(--radius);
+  padding: 14px; margin-bottom: 12px; box-shadow: var(--shadow);
+}
+.section-title {
+  font-size: 12px; font-weight: 700; letter-spacing: .5px;
+  margin: 16px 0 6px; padding-left: 2px;
+  color: var(--muted);
+}
+
+/* ── Inputs ── */
+input[type=text], input[type=number], input[type=date], select, textarea {
+  width: 100%; padding: 10px 12px; margin-top: 6px;
+  border-radius: 10px; border: 1px solid var(--input-border);
+  font-size: 16px; background: var(--input-bg); color: var(--text);
+  -webkit-appearance: none; appearance: none;
+  font-family: inherit;
+}
+textarea { min-height: 72px; resize: vertical; }
+label { font-size: 13px; color: var(--muted); margin-top: 10px; display: block; }
+label:first-child { margin-top: 0; }
+
+/* ── Buttons ── */
+.btn {
+  display: block; width: 100%; margin-top: 10px; padding: 13px;
+  border-radius: 12px; border: none; background: var(--accent-tap);
+  color: #fff; font-size: 16px; font-weight: 700; cursor: pointer;
+  -webkit-tap-highlight-color: transparent; font-family: inherit;
+}
+.btn.secondary { background: var(--btn-sec); color: var(--btn-sec-txt); }
+.btn.danger-btn { background: var(--danger-bg); color: var(--danger-txt); }
+.btn:active { opacity: .85; }
+.small-btn {
+  padding: 7px 10px; border-radius: 8px; border: none;
+  background: var(--btn-sec); color: var(--btn-sec-txt);
+  font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;
+  font-family: inherit;
+}
+.small-btn:active { opacity: .8; }
+.small-danger { background: var(--danger-bg); color: var(--danger-txt); }
+.small-green  { background: var(--green-bg);  color: var(--green-txt); }
+
+/* ── Inline row ── */
+.inline-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.inline-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+/* ── Day Nav ── */
+.day-nav-card { padding: 12px; }
+.day-nav {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.day-nav-info { text-align: center; }
+.day-nav-date { font-weight: 700; font-size: 16px; }
+.day-nav-sub  { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.nav-btn {
+  background: none; border: none; font-size: 24px; color: var(--accent);
+  cursor: pointer; padding: 4px 12px; border-radius: 8px;
+}
+.nav-btn:disabled { color: var(--muted); cursor: default; }
+
+/* ── Metric grid ── */
+.score-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px; margin-bottom: 12px;
+}
+.score-grid-2 {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-bottom: 12px;
+}
+.metric {
+  text-align: center; background: var(--card);
+  padding: 14px 8px; border-radius: var(--radius);
+  font-size: 22px; font-weight: 800; box-shadow: var(--shadow);
+}
+.metric small {
+  display: block; font-size: 11px; font-weight: 500;
+  color: var(--muted); margin-top: 4px;
+}
+.metric.up   { color: var(--green); }
+.metric.down { color: var(--red); }
+.metric.warn { color: var(--orange); }
+
+/* ── Log row ── */
+.log-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 0; border-bottom: 1px solid var(--border);
+}
+.log-row:last-child { border-bottom: none; }
+.log-row-label { flex: 1; font-size: 15px; font-weight: 500; }
+.log-row-val { font-size: 15px; color: var(--muted); text-align: right; }
+.log-row-unit { font-size: 12px; color: var(--muted); margin-left: 2px; }
+
+/* ── Session type badge ── */
+.session-badge {
+  display: inline-block; font-size: 12px; font-weight: 700;
+  border-radius: 8px; padding: 3px 9px;
+}
+
+/* ── Chart ── */
+.chart-wrap {
+  margin-top: 10px; border-radius: 10px; overflow: hidden;
+  background: var(--bg); padding: 4px 0;
+}
+canvas { display: block; width: 100%; }
+
+/* ── History entries ── */
+.history-entry {
+  padding: 12px 0; border-bottom: 1px solid var(--border); cursor: pointer;
+}
+.history-entry:last-child { border-bottom: none; }
+.history-date { font-weight: 700; font-size: 14px; color: var(--accent); margin-bottom: 4px; }
+.history-summary { font-size: 14px; line-height: 1.5; }
+.history-notes { font-size: 13px; color: var(--muted); margin-top: 3px; font-style: italic; }
+
+/* ── Goals progress ── */
+.goal-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.goal-row:last-child { border-bottom: none; }
+.goal-info { flex: 1; }
+.goal-label { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+.goal-progress-bar-wrap {
+  height: 4px; background: var(--cell-empty); border-radius: 2px;
+}
+.goal-progress-bar {
+  height: 100%; border-radius: 2px; background: var(--accent);
+  transition: width .4s ease;
+}
+.goal-pct { font-size: 14px; font-weight: 700; min-width: 40px; text-align: right; }
+
+/* ── Tag chips ── */
+.tag-wrap { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
+.tag-chip {
+  padding: 6px 12px; border-radius: 20px; font-size: 13px;
+  border: 1.5px solid var(--border); cursor: pointer;
+  background: var(--card); color: var(--muted);
+  -webkit-tap-highlight-color: transparent;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.tag-chip.selected {
+  background: var(--btn-sec); color: var(--btn-sec-txt); border-color: var(--accent);
+}
+
+/* ── Toast ── */
+.toast {
+  position: fixed; left: 16px; right: 16px;
+  bottom: calc(env(safe-area-inset-bottom) + 76px);
+  background: var(--toast-bg); color: var(--toast-text);
+  padding: 12px 14px; border-radius: 14px;
+  display: flex; justify-content: space-between; align-items: center;
+  z-index: 30; box-shadow: 0 4px 20px rgba(0,0,0,.25);
+  animation: toastIn .2s ease;
+}
+.toast button {
+  border: none; background: var(--card); color: var(--text);
+  padding: 6px 12px; border-radius: 8px; font-weight: 700; cursor: pointer;
+}
+@keyframes toastIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+/* ── Dialog ── */
+.dialog-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.45);
+  z-index: 50; display: flex; align-items: center; justify-content: center;
+  padding: 24px; animation: fadeIn .15s ease;
+}
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+.dialog {
+  background: var(--card); border-radius: 18px;
+  padding: 22px; width: 100%; max-width: 360px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.3);
+}
+.dialog-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+.dialog-body  { font-size: 15px; color: var(--muted); margin-bottom: 18px; white-space: pre-line; }
+.dialog-btns  { display: flex; gap: 8px; justify-content: flex-end; }
+.dialog-btn {
+  padding: 10px 18px; border-radius: 10px; border: none;
+  background: var(--btn-sec); color: var(--btn-sec-txt);
+  font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit;
+}
+.dialog-btn.danger { background: var(--danger-bg); color: var(--danger-txt); }
+
+/* ── Life tabs ── */
+.seg-tabs {
+  display: flex; gap: 6px; margin-bottom: 12px;
+  background: var(--card); border-radius: var(--radius);
+  padding: 6px; box-shadow: var(--shadow);
+}
+.seg-tab {
+  flex: 1; padding: 8px 4px; border: none; border-radius: 10px;
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  background: transparent; color: var(--muted);
+  transition: background .15s, color .15s;
+  -webkit-tap-highlight-color: transparent; font-family: inherit;
+}
+.seg-tab.active { background: var(--accent); color: #fff; font-weight: 700; }
+
+/* ── Empty state ── */
+.empty-state { text-align: center; padding: 32px 16px; color: var(--muted); }
+.empty-state-icon { font-size: 40px; display: block; margin-bottom: 10px; }
+
+/* ── Exercise rows ── */
+.ex-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+  transition: opacity .15s;
+}
+.ex-row:last-child { border-bottom: none; }
+.ex-row-info { flex: 1; min-width: 0; }
+.ex-row-name { font-size: 15px; font-weight: 500; }
+.ex-row-unit { font-size: 12px; margin-top: 1px; }
+.ex-skipped { opacity: .45; }
+.ex-input {
+  width: 80px !important; margin-top: 0 !important;
+  text-align: right; flex-shrink: 0;
+}
+.skip-ex-btn {
+  background: none; border: 1px solid var(--border); border-radius: 8px;
+  color: var(--muted); font-size: 14px; padding: 5px 9px; cursor: pointer;
+  flex-shrink: 0; line-height: 1; font-family: inherit;
+}
+.skip-ex-btn.skipped {
+  background: var(--btn-sec); color: var(--btn-sec-txt); border-color: var(--accent);
+}
+.skip-ex-btn:active { opacity: .7; }
+
+/* ── Exercise settings rows ── */
+.exset-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.exset-row:last-child { border-bottom: none; }
+.exset-info { flex: 1; min-width: 0; }
+.exset-name { font-size: 15px; font-weight: 600; }
+.exset-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+
+
+</style>
+</head>
+<body>
+
+<header id="app-header">Strength</header>
+<div class="container" id="content"></div>
+
+<div class="tabs">
+  <div class="tab" data-tab="log"     onclick="showTab('log')">     <span class="tab-icon">🏋️</span>Log</div>
+  <div class="tab" data-tab="stats"   onclick="showTab('stats')">   <span class="tab-icon">📊</span>Stats</div>
+  <div class="tab" data-tab="history" onclick="showTab('history')"> <span class="tab-icon">📅</span>History</div>
+  <div class="tab" data-tab="goals"   onclick="showTab('goals')">   <span class="tab-icon">🎯</span>Goals</div>
+  <div class="tab" data-tab="data"    onclick="showTab('data')">    <span class="tab-icon">⚙️</span>Data</div>
+</div>
+
+<script>
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+const APP_VERSION    = "2.1";
+const ENTRY_PREFIX   = "st:entry:";
+const GOALS_KEY      = "st:goals";
+const EXERCISES_KEY  = "st:exercises";
+
+// Default exercise list — shown on first run. Each exercise has: id, name, unit, group.
+const DEFAULT_EXERCISES = [
+  { id:"ex_pushmax",   name:"Push-ups max",   unit:"reps", group:"Push" },
+  { id:"ex_pushtotal", name:"Push-ups total",  unit:"reps", group:"Push" },
+  { id:"ex_rows",      name:"Rows",            unit:"reps", group:"Upper" },
+  { id:"ex_press",     name:"Floor press",     unit:"reps", group:"Upper" },
+  { id:"ex_curls",     name:"Hammer curls",    unit:"reps", group:"Upper" },
+  { id:"ex_tri",       name:"Triceps ext.",    unit:"reps", group:"Upper" },
+  { id:"ex_squats",    name:"Squats",          unit:"reps", group:"Lower" },
+];
+
+const QUICK_TAGS     = ["Felt strong","Poor sleep","Fasted","Heavy ruck","Shoulder tight","Good pump","Low energy","Easy day"];
+const MONTHS         = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const SESSION_COLORS = {
+  "Upper":     { bg:"#e8f0fe", color:"#0a84ff" },
+  "Lower":     { bg:"#eaffef", color:"#188038" },
+  "Full Body": { bg:"#fff3e0", color:"#c77000" },
+  "Ruck":      { bg:"#f3e5f5", color:"#7b1fa2" },
+  "Run":       { bg:"#e8f5e9", color:"#2e7d32" },
+  "Recovery":  { bg:"#fce4ec", color:"#c62828" },
+  "Rest":      { bg:"#f5f5f5", color:"#757575" },
+};
+
+const ENTRY_FIELDS = [
+  "sessionType","bodyWeight","pushupsMax","pushupsTotal","rows","press",
+  "curls","tri","squats","rucked","ruckDistance","ruckWeight","ruckDuration",
+  "ruckTerrain","ruckEffort","ran","runDistance","runDuration","runType",
+  "runEffort","armL","armR","sleepHours","energy","soreness","stress"
+];
+
+// ─── State ────────────────────────────────────────────────────────────────────
+
+const state = {
+  tab: "log",
+  logDate: todayKey(),
+  historyView: "list",  // "list" | "pr"
+  statsView: "overview", // "overview" | "cardio"
+  selectedTags: [],
+  dialog: null,
+  toast: null,
+};
+
+// ─── Date helpers ─────────────────────────────────────────────────────────────
+
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+
+function prevDay(key) {
+  const d = new Date(key+"T12:00:00"); d.setDate(d.getDate()-1);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+
+function nextDay(key) {
+  const d = new Date(key+"T12:00:00"); d.setDate(d.getDate()+1);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+
+function formatDisplayDate(key) {
+  const d = new Date(key+"T12:00:00");
+  return d.getDate()+" "+MONTHS[d.getMonth()]+" "+d.getFullYear();
+}
+
+function formatDayOfWeek(key) {
+  const d = new Date(key+"T12:00:00");
+  return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][d.getDay()];
+}
+
+function isFuture(key) { return key > todayKey(); }
+
+function weekStart(key) {
+  const d = new Date(key+"T12:00:00");
+  const day = d.getDay();
+  const offset = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate()+offset);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+
+function monthPrefix(key) { return key.slice(0,7); }
+
+function escapeHtml(t) {
+  return String(t).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+}
+
+// ─── Storage ──────────────────────────────────────────────────────────────────
+
+function getEntry(key) {
+  try { return JSON.parse(localStorage.getItem(ENTRY_PREFIX+key)) || {}; }
+  catch(e) { return {}; }
+}
+
+function saveEntry(key, data) {
+  try {
+    const hasData = ENTRY_FIELDS.some(f => data[f] !== "" && data[f] != null)
+      || (data.notes && data.notes.trim())
+      || (data.tags && data.tags.length)
+      || (data.skipped && data.skipped.length)
+      || Object.keys(data).some(k => k.startsWith("exv_") && data[k] !== "" && data[k] != null);
+    if (hasData) localStorage.setItem(ENTRY_PREFIX+key, JSON.stringify(data));
+    else localStorage.removeItem(ENTRY_PREFIX+key);
+  } catch(e) { showToast("⚠️ Storage full — export a backup", null); }
+}
+
+function deleteEntry(key) { localStorage.removeItem(ENTRY_PREFIX+key); }
+
+function allDateKeys() {
+  const keys = [];
+  for (let i=0; i<localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith(ENTRY_PREFIX)) keys.push(k.slice(ENTRY_PREFIX.length));
+  }
+  return keys.sort();
+}
+
+function getGoals() {
+  try { return JSON.parse(localStorage.getItem(GOALS_KEY)) || {}; }
+  catch(e) { return {}; }
+}
+
+function saveGoals(g) { localStorage.setItem(GOALS_KEY, JSON.stringify(g)); }
+
+// ─── Exercise storage ──────────────────────────────────────────────────────────
+
+function getExercises() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(EXERCISES_KEY));
+    return Array.isArray(raw) && raw.length ? raw : DEFAULT_EXERCISES.map(e=>({...e}));
+  } catch(e) { return DEFAULT_EXERCISES.map(e=>({...e})); }
+}
+
+function saveExercises(list) {
+  localStorage.setItem(EXERCISES_KEY, JSON.stringify(list));
+}
+
+let autoSaveTimer = null;
+
+function addExercise(name, unit, group) {
+  const list = getExercises();
+  const id   = "ex_" + Math.random().toString(36).slice(2,8);
+  list.push({ id, name: name.trim(), unit: unit.trim() || "reps", group: group.trim() || "Custom" });
+  saveExercises(list);
+  return id;
+}
+
+function deleteExercise(id) {
+  const list = getExercises().filter(e => e.id !== id);
+  saveExercises(list);
+}
+
+// Skips are stored per-day inside the entry: entry.skipped = ["ex_id1", ...]
+function isSkipped(entry, exId) {
+  return (entry.skipped || []).includes(exId);
+}
+
+function toggleSkipInEntry(key, exId) {
+  // Flush any pending auto-save first so we don't clobber
+  clearTimeout(autoSaveTimer);
+  const entry = getEntry(key);
+  const skipped = entry.skipped || [];
+  if (skipped.includes(exId)) {
+    entry.skipped = skipped.filter(x => x !== exId);
+  } else {
+    entry.skipped = [...skipped, exId];
+    // Clear any logged value for this exercise when skipping
+    delete entry["ex_"+exId.replace("ex_","")];
+  }
+  saveEntry(key, entry);
+  renderLog();
+}
+
+function getExVal(entry, exId) {
+  // Values for custom exercises stored as entry["exv_<id>"]
+  return entry["exv_"+exId] || "";
+}
+
+function saveExVal(exId, value) {
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(() => {
+    const entry = getEntry(state.logDate);
+    entry["exv_"+exId] = value;
+    saveEntry(state.logDate, entry);
+  }, 400);
+}
+
+function toNum(v) { const n = parseFloat(v); return isNaN(n) ? null : n; }
+
+// ─── Tab routing ──────────────────────────────────────────────────────────────
+
+function showTab(tab) {
+  state.tab = tab;
+  clearToast();
+  document.querySelectorAll(".tab").forEach(el => el.classList.toggle("active", el.dataset.tab === tab));
+  const fns = { log: renderLog, stats: renderStats, history: renderHistory, goals: renderGoals, data: renderData };
+  fns[tab]?.();
+}
+
+// ─── LOG TAB ──────────────────────────────────────────────────────────────────
+
+function renderLog() {
+  const key   = state.logDate;
+  const entry = getEntry(key);
+  const isToday = key === todayKey();
+  const hasSaved = allDateKeys().includes(key);
+  const sessionCol = SESSION_COLORS[entry.sessionType] || {};
+
+  document.getElementById("app-header").textContent = "Strength";
+
+  let html = `
+    <div class="card day-nav-card">
+      <div class="day-nav">
+        <button class="nav-btn" onclick="logPrevDay()">‹</button>
+        <div class="day-nav-info">
+          <div class="day-nav-date">${formatDisplayDate(key)}</div>
+          <div class="day-nav-sub">${formatDayOfWeek(key)}${isToday ? " · Today" : ""}</div>
+        </div>
+        <button class="nav-btn" onclick="logNextDay()" ${isToday?"disabled":""}>›</button>
+      </div>
+    </div>`;
+
+  // Session type + body weight
+  html += `<div class="card">
+    <h3>Session</h3>
+    <div class="inline-row">
+      <div>
+        <label>Type</label>
+        <select id="f-sessionType" onchange="autoSave()">
+          <option value="">—</option>
+          ${["Upper","Lower","Full Body","Ruck","Run","Recovery","Rest"].map(t=>`<option value="${t}" ${entry.sessionType===t?"selected":""}>${t}</option>`).join("")}
+        </select>
+      </div>
+      <div>
+        <label>Body weight (kg)</label>
+        <input type="number" id="f-bodyWeight" step="0.1" min="0" value="${entry.bodyWeight||""}" placeholder="—" oninput="autoSave()">
+      </div>
+    </div>
+    <label>Wellbeing</label>
+    <div class="inline-row-3" style="margin-top:6px">
+      ${renderRatingField("f-energy","⚡","energy",entry.energy)}
+      ${renderRatingField("f-soreness","😣","soreness",entry.soreness)}
+      ${renderRatingField("f-stress","🧠","stress",entry.stress)}
+    </div>
+    <label style="margin-top:10px">Sleep (hrs)</label>
+    <input type="number" id="f-sleepHours" step="0.5" min="0" max="24" value="${entry.sleepHours||""}" placeholder="—" oninput="autoSave()">
+  </div>`;
+
+  // Dynamic exercises — grouped
+  const exercises = getExercises();
+  const groups = [...new Set(exercises.map(e => e.group))];
+
+  groups.forEach(group => {
+    const groupExes = exercises.filter(e => e.group === group);
+    html += `<div class="card"><h3>${escapeHtml(group)}</h3>`;
+    groupExes.forEach(ex => {
+      const skipped = isSkipped(entry, ex.id);
+      const val     = getExVal(entry, ex.id);
+      html += `<div class="ex-row ${skipped ? "ex-skipped" : ""}">
+        <div class="ex-row-info">
+          <div class="ex-row-name">${escapeHtml(ex.name)}</div>
+          <div class="ex-row-unit muted">${escapeHtml(ex.unit)}</div>
+        </div>
+        <input type="number" class="ex-input" min="0"
+          value="${escapeHtml(val)}" placeholder="—"
+          ${skipped ? "disabled" : ""}
+          oninput="saveExVal('${ex.id}', this.value)"
+          style="width:80px;margin-top:0;text-align:right;${skipped?"opacity:.4":""}">
+        <button class="skip-ex-btn ${skipped ? "skipped" : ""}"
+          onclick="toggleSkipInEntry('${state.logDate}','${ex.id}')"
+          title="${skipped ? "Unskip" : "Skip today"}">○</button>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+
+
+
+  // Ruck
+  html += `<div class="card">
+    <h3>Ruck</h3>
+    <div class="inline-row">
+      <div>
+        <label>Distance (km)</label>
+        <input type="number" id="f-ruckDistance" step="0.1" min="0" value="${entry.ruckDistance||""}" placeholder="—" oninput="autoSave()">
+      </div>
+      <div>
+        <label>Pack weight (kg)</label>
+        <input type="number" id="f-ruckWeight" step="0.1" min="0" value="${entry.ruckWeight||""}" placeholder="—" oninput="autoSave()">
+      </div>
+    </div>
+    <div class="inline-row">
+      <div>
+        <label>Duration (min)</label>
+        <input type="number" id="f-ruckDuration" min="0" value="${entry.ruckDuration||""}" placeholder="—" oninput="autoSave()">
+      </div>
+      <div>
+        <label>Effort (1–10)</label>
+        <input type="number" id="f-ruckEffort" min="1" max="10" value="${entry.ruckEffort||""}" placeholder="—" oninput="autoSave()">
+      </div>
+    </div>
+    <label>Terrain</label>
+    <input type="text" id="f-ruckTerrain" value="${escapeHtml(entry.ruckTerrain||"")}" placeholder="Road, hills, mixed…" oninput="autoSave()">
+  </div>`;
+
+  // Run
+  html += `<div class="card">
+    <h3>Run</h3>
+    <div class="inline-row">
+      <div>
+        <label>Distance (km)</label>
+        <input type="number" id="f-runDistance" step="0.1" min="0" value="${entry.runDistance||""}" placeholder="—" oninput="autoSave()">
+      </div>
+      <div>
+        <label>Duration (min)</label>
+        <input type="number" id="f-runDuration" min="0" value="${entry.runDuration||""}" placeholder="—" oninput="autoSave()">
+      </div>
+    </div>
+    <div class="inline-row">
+      <div>
+        <label>Type</label>
+        <select id="f-runType" onchange="autoSave()">
+          <option value="">—</option>
+          ${["Easy","Tempo","Intervals","Long","Recovery"].map(t=>`<option value="${t}" ${entry.runType===t?"selected":""}>${t}</option>`).join("")}
+        </select>
+      </div>
+      <div>
+        <label>Effort (1–10)</label>
+        <input type="number" id="f-runEffort" min="1" max="10" value="${entry.runEffort||""}" placeholder="—" oninput="autoSave()">
+      </div>
+    </div>
+  </div>`;
+
+  // Arms
+  html += `<div class="card">
+    <h3>Measurements</h3>
+    <div class="inline-row">
+      <div>
+        <label>Arm left (cm)</label>
+        <input type="number" id="f-armL" step="0.1" min="0" value="${entry.armL||""}" placeholder="—" oninput="autoSave()">
+      </div>
+      <div>
+        <label>Arm right (cm)</label>
+        <input type="number" id="f-armR" step="0.1" min="0" value="${entry.armR||""}" placeholder="—" oninput="autoSave()">
+      </div>
+    </div>
+  </div>`;
+
+  // Tags + notes
+  html += `<div class="card">
+    <h3>Tags</h3>
+    <div class="tag-wrap" id="tag-wrap">
+      ${QUICK_TAGS.map(t => {
+        const sel = (entry.tags||[]).includes(t);
+        return `<div class="tag-chip ${sel?"selected":""}" onclick="toggleTag('${t}')">${t}</div>`;
+      }).join("")}
+    </div>
+    <h3 style="margin-top:14px">Notes</h3>
+    <textarea id="f-notes" placeholder="Anything else worth remembering…" oninput="autoSave()">${escapeHtml(entry.notes||"")}</textarea>
+  </div>`;
+
+  if (hasSaved) {
+    html += `<button class="btn danger-btn" onclick="confirmDeleteEntry('${key}')">Delete this entry</button>`;
+  }
+
+  document.getElementById("content").innerHTML = html;
+
+  // Set tags from entry
+  state.selectedTags = [...(entry.tags||[])];
+}
+
+function renderRatingField(id, icon, field, val) {
+  return `<div>
+    <label>${icon}</label>
+    <input type="number" id="${id}" min="1" max="10" value="${val||""}" placeholder="—" oninput="autoSave()">
+  </div>`;
+}
+
+function logPrevDay() {
+  state.logDate = prevDay(state.logDate);
+  renderLog();
+}
+
+function logNextDay() {
+  if (isFuture(state.logDate)) return;
+  state.logDate = nextDay(state.logDate);
+  if (state.logDate > todayKey()) state.logDate = todayKey();
+  renderLog();
+}
+
+function readForm() {
+  const get = id => { const el = document.getElementById(id); return el ? el.value.trim() : ""; };
+  // Start from existing entry so we preserve exercise values and skips
+  const data = { ...getEntry(state.logDate) };
+  ENTRY_FIELDS.forEach(f => {
+    const el = document.getElementById("f-"+f);
+    if (el) data[f] = el.value.trim();
+  });
+  data.tags  = [...state.selectedTags];
+  data.notes = get("f-notes");
+  // Exercise values are already auto-saved via saveExVal — no need to re-read here
+  return data;
+}
+
+function autoSave() {
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(() => {
+    const data = readForm();
+    saveEntry(state.logDate, data);
+  }, 400);
+}
+
+function toggleTag(tag) {
+  if (state.selectedTags.includes(tag)) {
+    state.selectedTags = state.selectedTags.filter(t=>t!==tag);
+  } else {
+    state.selectedTags = [...state.selectedTags, tag];
+  }
+  document.querySelectorAll(".tag-chip").forEach(el => {
+    el.classList.toggle("selected", state.selectedTags.includes(el.textContent.trim()));
+  });
+  autoSave();
+}
+
+function confirmDeleteEntry(key) {
+  showDialog("Delete entry", `Remove the entry for ${formatDisplayDate(key)}? This cannot be undone.`, [
+    { label: "Delete", danger: true, action: () => {
+      deleteEntry(key);
+      showToast("Entry deleted", null);
+      renderLog();
+    }},
+    { label: "Cancel", action: closeDialog }
+  ]);
+}
+
+// ─── STATS TAB ────────────────────────────────────────────────────────────────
+
+function renderStats() {
+  const view = state.statsView;
+  const html = `
+    <div class="seg-tabs">
+      <button class="seg-tab ${view==="overview"?"active":""}" onclick="setStatsView('overview')">Overview</button>
+      <button class="seg-tab ${view==="strength"?"active":""}" onclick="setStatsView('strength')">Strength</button>
+      <button class="seg-tab ${view==="cardio"?"active":""}"   onclick="setStatsView('cardio')">Cardio</button>
+    </div>
+    <div id="stats-body"></div>`;
+
+  document.getElementById("content").innerHTML = html;
+  renderStatsBody();
+}
+
+function setStatsView(v) {
+  state.statsView = v;
+  document.querySelectorAll(".seg-tab").forEach(el => {
+    el.classList.toggle("active", el.textContent.toLowerCase() === v);
+  });
+  renderStatsBody();
+}
+
+function renderStatsBody() {
+  const view  = state.statsView;
+  const dates = allDateKeys();
+  const el    = document.getElementById("stats-body");
+  if (!el) return;
+
+  if (view === "overview") el.innerHTML = renderOverviewStats(dates);
+  else if (view === "strength") el.innerHTML = renderStrengthStats(dates);
+  else if (view === "cardio") el.innerHTML = renderCardioStats(dates);
+
+  // Draw charts after render
+  requestAnimationFrame(() => drawAllCharts(view, dates));
+}
+
+function renderOverviewStats(dates) {
+  if (!dates.length) return emptyState("📊","No entries yet","Log a session to see your stats.");
+
+  const latestWeight = latestVal(dates, "bodyWeight");
+  const firstWeight  = firstVal(dates, "bodyWeight");
+  const weightDelta  = (latestWeight !== null && firstWeight !== null) ? (latestWeight - firstWeight).toFixed(1) : null;
+  const totalTraining = dates.filter(d => {
+    const e = getEntry(d);
+    return (e.sessionType && e.sessionType !== "Rest") || toNum(e.ruckDistance) || toNum(e.runDistance) || toNum(e.pushupsTotal);
+  }).length;
+
+  const wk = weeklyTotals();
+  const monthlyPush = monthlyTotal("pushupsTotal");
+
+  let html = `
+    <div class="score-grid">
+      <div class="metric">${dates.length}<small>Entries</small></div>
+      <div class="metric">${totalTraining}<small>Training days</small></div>
+      <div class="metric ${weightDelta !== null ? (parseFloat(weightDelta) > 0 ? "up" : weightDelta < 0 ? "down" : "") : ""}">${latestWeight !== null ? latestWeight+"kg" : "—"}<small>Weight</small></div>
+    </div>
+    <div class="score-grid">
+      <div class="metric">${wk.pushups}<small>Pushups/wk</small></div>
+      <div class="metric">${wk.ruckKm > 0 ? wk.ruckKm.toFixed(1) : "—"}<small>Ruck km/wk</small></div>
+      <div class="metric">${wk.runKm > 0 ? wk.runKm.toFixed(1) : "—"}<small>Run km/wk</small></div>
+    </div>
+    <div class="card">
+      <h3>Body weight</h3>
+      <div class="chart-wrap"><canvas id="chart-weight" height="140"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>This month — push-ups total</h3>
+      <div style="font-size:32px;font-weight:800;color:var(--accent);margin:6px 0 2px">${monthlyPush}</div>
+      <div class="muted" style="font-size:13px">across ${MONTHS[new Date().getMonth()]} ${new Date().getFullYear()}</div>
+    </div>`;
+  return html;
+}
+
+function renderStrengthStats(dates) {
+  if (!dates.length) return emptyState("💪","No entries yet","Log a session to see your strength stats.");
+
+  const exercises = getExercises();
+  const latestArm = latestArmAvg(dates);
+
+  // Build PR metrics for each exercise
+  const prCards = exercises.map(ex => {
+    const series = dates.map(k => {
+      const v = toNum(getEntry(k)["exv_"+ex.id]);
+      return v !== null ? v : null;
+    }).filter(v => v !== null);
+    const best = series.length ? Math.max(...series) : null;
+    return { ex, best };
+  }).filter(r => r.best !== null);
+
+  const topPRs = prCards.slice(0, 6);
+
+  let metricsHtml = "";
+  if (topPRs.length) {
+    // Show up to 6 PRs in score-grid style (3 per row)
+    const rows = [];
+    for (let i = 0; i < topPRs.length; i += 3) {
+      rows.push(topPRs.slice(i, i+3));
+    }
+    rows.forEach(row => {
+      metricsHtml += `<div class="score-grid" style="grid-template-columns:${row.map(()=>"1fr").join(" ")}">`;
+      row.forEach(r => {
+        metricsHtml += `<div class="metric">${r.best}<small>${escapeHtml(r.ex.name)}</small></div>`;
+      });
+      metricsHtml += `</div>`;
+    });
+  }
+
+  if (latestArm !== null) {
+    metricsHtml += `<div class="score-grid-2"><div class="metric">${latestArm}cm<small>Arm avg</small></div></div>`;
+  }
+
+  // Charts for first two exercises
+  const chartExes = exercises.slice(0, 2);
+  const chartsHtml = chartExes.map((ex, i) => `
+    <div class="card">
+      <h3>${escapeHtml(ex.name)} over time</h3>
+      <div class="chart-wrap"><canvas id="chart-ex-${i}" height="140"></canvas></div>
+    </div>`).join("");
+
+  return metricsHtml + chartsHtml + `
+    <div class="card">
+      <h3>Arm measurements</h3>
+      <div class="chart-wrap"><canvas id="chart-arms" height="140"></canvas></div>
+    </div>`;
+}
+
+function renderCardioStats(dates) {
+  if (!dates.length) return emptyState("🏃","No entries yet","Log a session to see cardio stats.");
+
+  const totalRuckKm = sumVal(dates, "ruckDistance");
+  const totalRunKm  = sumVal(dates, "runDistance");
+  const ruckDays    = dates.filter(d => toNum(getEntry(d).ruckDistance) > 0).length;
+  const runDays     = dates.filter(d => toNum(getEntry(d).runDistance) > 0).length;
+
+  return `
+    <div class="score-grid">
+      <div class="metric">${totalRuckKm > 0 ? totalRuckKm.toFixed(0) : "—"}<small>Total ruck km</small></div>
+      <div class="metric">${ruckDays}<small>Ruck days</small></div>
+      <div class="metric">${runDays}<small>Run days</small></div>
+    </div>
+    <div class="card">
+      <h3>Ruck distance over time</h3>
+      <div class="chart-wrap"><canvas id="chart-ruck" height="140"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Run distance over time</h3>
+      <div class="chart-wrap"><canvas id="chart-run" height="140"></canvas></div>
+    </div>`;
+}
+
+function emptyState(icon, title, sub) {
+  return `<div class="empty-state"><span class="empty-state-icon">${icon}</span><strong>${title}</strong><div style="margin-top:6px">${sub}</div></div>`;
+}
+
+// ─── Chart drawing ────────────────────────────────────────────────────────────
+
+function drawAllCharts(view, dates) {
+  if (view === "overview") {
+    drawLineChart("chart-weight", buildSeries(dates, "bodyWeight"));
+  } else if (view === "strength") {
+    // Draw charts for the first two exercises (rendered as chart-ex-0, chart-ex-1)
+    const exercises = getExercises();
+    exercises.slice(0, 2).forEach((ex, i) => {
+      drawLineChart("chart-ex-"+i, buildSeriesTransform(dates, d => toNum(d["exv_"+ex.id])));
+    });
+    drawLineChart("chart-arms", buildSeriesTransform(dates, d => {
+      const l = toNum(d.armL), r = toNum(d.armR);
+      if (l !== null && r !== null) return +((l+r)/2).toFixed(1);
+      return l ?? r ?? null;
+    }));
+  } else if (view === "cardio") {
+    drawLineChart("chart-ruck", buildSeries(dates, "ruckDistance"));
+    drawLineChart("chart-run",  buildSeries(dates, "runDistance"));
+  }
+}
+
+function buildSeries(dates, field) {
+  return dates.map(k => {
+    const v = toNum(getEntry(k)[field]);
+    return v !== null ? { label: k.slice(5), y: v } : null;
+  }).filter(Boolean);
+}
+
+function buildSeriesTransform(dates, fn) {
+  return dates.map(k => {
+    const v = fn(getEntry(k));
+    return v !== null ? { label: k.slice(5), y: v } : null;
+  }).filter(Boolean);
+}
+
+function drawLineChart(canvasId, points) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ratio = window.devicePixelRatio || 1;
+  const rect  = canvas.parentElement.getBoundingClientRect();
+  const W = rect.width, H = 140;
+  canvas.width  = W * ratio;
+  canvas.height = H * ratio;
+  canvas.style.width  = W + "px";
+  canvas.style.height = H + "px";
+  const ctx = canvas.getContext("2d");
+  ctx.scale(ratio, ratio);
+
+  const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const borderColor = isDark ? "#3a3a3c" : "#e0e0e5";
+  const textColor   = isDark ? "#8e8e93" : "#6e6e73";
+  const lineColor   = "#007AFF";
+  const dotColor    = "#0a84ff";
+
+  ctx.clearRect(0,0,W,H);
+
+  const pad = { left: 8, right: 8, top: 14, bottom: 22 };
+
+  if (!points.length) {
+    ctx.fillStyle = textColor;
+    ctx.font = "13px -apple-system,sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("No data yet", W/2, H/2);
+    return;
+  }
+
+  const ys  = points.map(p=>p.y);
+  let mn = Math.min(...ys), mx = Math.max(...ys);
+  if (mn === mx) { mn -= 1; mx += 1; }
+  const plotW = W - pad.left - pad.right;
+  const plotH = H - pad.top - pad.bottom;
+
+  // Grid line
+  ctx.strokeStyle = borderColor; ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(pad.left, H - pad.bottom);
+  ctx.lineTo(W - pad.right, H - pad.bottom);
+  ctx.stroke();
+
+  // Min / max labels
+  ctx.fillStyle = textColor;
+  ctx.font = "10px -apple-system,sans-serif";
+  ctx.textAlign = "left";
+  ctx.fillText(mx.toFixed(1), pad.left, pad.top - 2);
+  ctx.fillText(mn.toFixed(1), pad.left, H - pad.bottom + 12);
+
+  // Line
+  ctx.strokeStyle = lineColor; ctx.lineWidth = 2;
+  ctx.lineJoin = "round"; ctx.lineCap = "round";
+  ctx.beginPath();
+  points.forEach((p,i) => {
+    const x = pad.left + (points.length===1 ? plotW/2 : (i/(points.length-1))*plotW);
+    const y = pad.top + (1 - (p.y - mn)/(mx - mn)) * plotH;
+    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+
+  // Dots
+  ctx.fillStyle = dotColor;
+  points.forEach((p,i) => {
+    const x = pad.left + (points.length===1 ? plotW/2 : (i/(points.length-1))*plotW);
+    const y = pad.top + (1 - (p.y - mn)/(mx - mn)) * plotH;
+    ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI*2); ctx.fill();
+  });
+
+  // Latest value callout
+  const last = points[points.length-1];
+  const lx   = pad.left + plotW;
+  const ly   = pad.top + (1 - (last.y - mn)/(mx - mn)) * plotH;
+  ctx.fillStyle = textColor;
+  ctx.textAlign = "right";
+  ctx.fillText(last.y, lx, Math.max(ly - 6, 12));
+}
+
+// ─── HISTORY TAB ─────────────────────────────────────────────────────────────
+
+function renderHistory() {
+  const view  = state.historyView;
+  const dates = allDateKeys().slice().reverse();
+
+  let html = `
+    <div class="seg-tabs">
+      <button class="seg-tab ${view==="list"?"active":""}" onclick="setHistoryView('list')">Log</button>
+      <button class="seg-tab ${view==="pr"?"active":""}"   onclick="setHistoryView('pr')">PRs</button>
+    </div>
+    <div id="history-body"></div>`;
+
+  document.getElementById("content").innerHTML = html;
+  renderHistoryBody();
+}
+
+function setHistoryView(v) {
+  state.historyView = v;
+  document.querySelectorAll(".seg-tab").forEach(el => {
+    el.classList.toggle("active", el.textContent.toLowerCase() === v || (v==="list"&&el.textContent==="Log") || (v==="pr"&&el.textContent==="PRs"));
+  });
+  renderHistoryBody();
+}
+
+function renderHistoryBody() {
+  const el = document.getElementById("history-body");
+  if (!el) return;
+  const dates = allDateKeys().slice().reverse();
+
+  if (state.historyView === "pr") {
+    el.innerHTML = renderPRs(dates);
+    return;
+  }
+
+  if (!dates.length) {
+    el.innerHTML = emptyState("📅","No history yet","Log your first session above.");
+    return;
+  }
+
+  let html = `<div class="card">`;
+  dates.forEach(k => {
+    const entry = getEntry(k);
+    const parts = [];
+    if (entry.sessionType) {
+      const col = SESSION_COLORS[entry.sessionType] || {};
+      parts.push(`<span class="session-badge" style="background:${col.bg||"#f2f2f7"};color:${col.color||"#555"}">${entry.sessionType}</span>`);
+    }
+    if (toNum(entry.pushupsTotal)) parts.push(`${entry.pushupsTotal} push-ups`);
+    if (toNum(entry.pushupsMax))   parts.push(`${entry.pushupsMax} max`);
+    if (toNum(entry.ruckDistance)) parts.push(`${entry.ruckDistance}km ruck`);
+    if (toNum(entry.runDistance))  parts.push(`${entry.runDistance}km run`);
+    if (toNum(entry.bodyWeight))   parts.push(`${entry.bodyWeight}kg`);
+
+    html += `<div class="history-entry" onclick="jumpToDate('${k}')">
+      <div class="history-date">${formatDisplayDate(k)}</div>
+      <div class="history-summary">${parts.length ? parts.join(" · ") : '<span class="muted">Entry logged</span>'}</div>
+      ${entry.notes ? `<div class="history-notes">${escapeHtml(entry.notes.slice(0,80))}${entry.notes.length>80?"…":""}</div>` : ""}
+    </div>`;
+  });
+  el.innerHTML = html + `</div>`;
+}
+
+function renderPRs(dates) {
+  if (!dates.length) return emptyState("🏆","No PRs yet","Log entries to track personal records.");
+
+  const exercises = getExercises();
+  let html = `<div class="card"><h3>Exercise PRs</h3>`;
+  let anyPR = false;
+
+  exercises.forEach(ex => {
+    let best = null;
+    dates.forEach(k => {
+      const v = toNum(getEntry(k)["exv_"+ex.id]);
+      if (v !== null && (best === null || v > best)) best = v;
+    });
+    if (best === null) return;
+    anyPR = true;
+    html += `<div class="log-row">
+      <div class="log-row-label">${escapeHtml(ex.name)}</div>
+      <div class="log-row-val">${best}<span class="log-row-unit">${escapeHtml(ex.unit)}</span></div>
+    </div>`;
+  });
+
+  // Always show cardio PRs too
+  const cardioPRs = [
+    { key: "ruckDistance", label: "Ruck distance", unit: "km" },
+    { key: "runDistance",  label: "Run distance",  unit: "km" },
+  ];
+  cardioPRs.forEach(f => {
+    let best = null;
+    dates.forEach(k => {
+      const v = toNum(getEntry(k)[f.key]);
+      if (v !== null && (best === null || v > best)) best = v;
+    });
+    if (best === null) return;
+    anyPR = true;
+    html += `<div class="log-row">
+      <div class="log-row-label">${f.label}</div>
+      <div class="log-row-val">${best}<span class="log-row-unit">${f.unit}</span></div>
+    </div>`;
+  });
+
+  if (!anyPR) html += `<div class="muted">No values logged yet.</div>`;
+  html += `</div>`;
+  return html;
+}
+
+function jumpToDate(key) {
+  state.logDate = key;
+  showTab("log");
+}
+
+// ─── GOALS TAB ────────────────────────────────────────────────────────────────
+
+function renderGoals() {
+  const goals  = getGoals();
+  const dates  = allDateKeys();
+  const wk     = weeklyTotals();
+  const month  = monthlyTotal("pushupsTotal");
+  // Find push-ups max exercise dynamically
+  const exercises = getExercises();
+  const pushMaxEx = exercises.find(e => e.id === "ex_pushmax" || e.name.toLowerCase().includes("max"));
+  let latestPushMax = 0;
+  if (pushMaxEx) {
+    for (let i = dates.length-1; i >= 0; i--) {
+      const v = toNum(getEntry(dates[i])["exv_"+pushMaxEx.id]);
+      if (v !== null) { latestPushMax = v; break; }
+    }
+  }
+
+  const goalsData = [
+    { key: "pushupsMax",    label: "Push-ups max",        current: latestPushMax,   unit: "reps", fieldType: "number" },
+    { key: "monthlyPushups",label: "Push-ups this month", current: month,         unit: "reps", fieldType: "number" },
+    { key: "weeklyRuckKm",  label: "Ruck distance / week",current: +(wk.ruckKm.toFixed(1)), unit: "km", fieldType: "decimal" },
+    { key: "weeklyRunKm",   label: "Run distance / week", current: +(wk.runKm.toFixed(1)),  unit: "km", fieldType: "decimal" },
+  ];
+
+  let html = `<div class="card"><h3>Progress toward goals</h3>`;
+  goalsData.forEach(g => {
+    const target = toNum(goals[g.key]);
+    const pct    = target ? Math.min(100, Math.round(g.current / target * 100)) : 0;
+    const pctCol = pct >= 100 ? "var(--green)" : pct >= 60 ? "var(--accent)" : "var(--orange)";
+    html += `<div class="goal-row">
+      <div class="goal-info">
+        <div class="goal-label">${g.label}</div>
+        <div class="goal-progress-bar-wrap">
+          <div class="goal-progress-bar" style="width:${target?pct:0}%;background:${pctCol}"></div>
+        </div>
+      </div>
+      <div class="goal-pct" style="color:${target?pctCol:"var(--muted)"}">
+        ${target ? (pct >= 100 ? "✓" : pct+"%") : "—"}
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  html += `<div class="card"><h3>Set goals</h3>
+    <label>Push-ups max target</label>
+    <input type="number" id="g-pushupsMax" value="${goals.pushupsMax||""}" placeholder="e.g. 50" oninput="saveGoalField()">
+    <label>Push-ups this month target</label>
+    <input type="number" id="g-monthlyPushups" value="${goals.monthlyPushups||""}" placeholder="e.g. 2000" oninput="saveGoalField()">
+    <label>Weekly ruck distance (km)</label>
+    <input type="number" id="g-weeklyRuckKm" step="0.1" value="${goals.weeklyRuckKm||""}" placeholder="e.g. 15" oninput="saveGoalField()">
+    <label>Weekly run distance (km)</label>
+    <input type="number" id="g-weeklyRunKm" step="0.1" value="${goals.weeklyRunKm||""}" placeholder="e.g. 10" oninput="saveGoalField()">
+  </div>`;
+
+  document.getElementById("content").innerHTML = html;
+}
+
+let goalSaveTimer = null;
+function saveGoalField() {
+  clearTimeout(goalSaveTimer);
+  goalSaveTimer = setTimeout(() => {
+    saveGoals({
+      pushupsMax:     document.getElementById("g-pushupsMax")?.value || "",
+      monthlyPushups: document.getElementById("g-monthlyPushups")?.value || "",
+      weeklyRuckKm:   document.getElementById("g-weeklyRuckKm")?.value || "",
+      weeklyRunKm:    document.getElementById("g-weeklyRunKm")?.value || "",
+    });
+    // Re-render progress bars
+    const gs = getGoals();
+    const dates = allDateKeys();
+    const wk = weeklyTotals();
+    // Just re-render the full tab to refresh progress bars
+    renderGoals();
+  }, 600);
+}
+
+// ─── DATA TAB ─────────────────────────────────────────────────────────────────
+
+function renderData() {
+  const exercises = getExercises();
+  const groups = [...new Set(exercises.map(e => e.group))];
+
+  let exRows = "";
+  exercises.forEach(ex => {
+    exRows += `<div class="exset-row">
+      <div class="exset-info">
+        <div class="exset-name">${escapeHtml(ex.name)}</div>
+        <div class="exset-meta">${escapeHtml(ex.unit)} · ${escapeHtml(ex.group)}</div>
+      </div>
+      <button class="small-btn small-danger" onclick="confirmDeleteExercise('${ex.id}','${escapeHtml(ex.name)}')">Remove</button>
+    </div>`;
+  });
+
+  document.getElementById("content").innerHTML = `
+    <div class="card">
+      <h3>Exercises <span class="muted" style="font-size:13px;font-weight:400">${exercises.length} total</span></h3>
+      ${exRows || '<div class="muted">No exercises yet.</div>'}
+      <h3 style="margin-top:16px">Add exercise</h3>
+      <input type="text" id="new-ex-name" placeholder="e.g. Dips, Pull-ups, Deadlift">
+      <div class="inline-row" style="margin-top:0">
+        <div>
+          <label>Unit</label>
+          <input type="text" id="new-ex-unit" placeholder="reps, kg, min…" value="reps">
+        </div>
+        <div>
+          <label>Group</label>
+          <input type="text" id="new-ex-group" placeholder="Upper, Lower, Custom…" list="group-list">
+          <datalist id="group-list">
+            ${groups.map(g=>`<option value="${escapeHtml(g)}">`).join("")}
+            <option value="Push"><option value="Upper"><option value="Lower"><option value="Cardio"><option value="Custom">
+          </datalist>
+        </div>
+      </div>
+      <button class="btn" onclick="submitAddExercise()">Add Exercise</button>
+    </div>
+    <div class="card">
+      <h3>Export</h3>
+      <div class="muted" style="margin-bottom:10px;font-size:14px">Download a full backup of all your entries. Keep this safe.</div>
+      <button class="btn secondary" onclick="downloadBackup()">Download JSON backup</button>
+      <button class="btn secondary" style="margin-top:8px" onclick="downloadCSV()">Export CSV</button>
+    </div>
+    <div class="card">
+      <h3>Import</h3>
+      <div class="muted" style="margin-bottom:10px;font-size:14px">Replaces all current data. Only import a valid Strength backup.</div>
+      <input type="file" accept=".json" onchange="handleImport(this.files[0]);this.value=''">
+    </div>
+    <div class="card">
+      <h3>Danger zone</h3>
+      <button class="btn danger-btn" onclick="confirmClearAll()">Delete all data</button>
+    </div>
+    <div class="card" style="text-align:center">
+      <div style="font-size:28px;font-weight:800;color:var(--accent)">v${APP_VERSION}</div>
+      <div class="muted" style="font-size:13px;margin-top:4px">Strength Tracker · Data stored on this device only</div>
+    </div>`;
+}
+
+function submitAddExercise() {
+  const name  = document.getElementById("new-ex-name")?.value?.trim();
+  if (!name) { showToast("Enter an exercise name", null); return; }
+  const unit  = document.getElementById("new-ex-unit")?.value?.trim() || "reps";
+  const group = document.getElementById("new-ex-group")?.value?.trim() || "Custom";
+  addExercise(name, unit, group);
+  showToast(`"${name}" added`, null);
+  renderData();
+}
+
+function confirmDeleteExercise(id, name) {
+  showDialog("Remove exercise", `Remove "${name}" from your exercise list? Past logged values are kept in your entries.`, [
+    { label: "Remove", danger: true, action: () => {
+      deleteExercise(id);
+      showToast(`"${name}" removed`, null);
+      renderData();
+    }},
+    { label: "Cancel", action: closeDialog }
+  ]);
+}
+
+function downloadBackup() {
+  const dates = allDateKeys();
+  const entries = {};
+  dates.forEach(k => { entries[k] = getEntry(k); });
+  const payload = { version: APP_VERSION, goals: getGoals(), exercises: getExercises(), entries };
+  const uri = "data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(payload, null, 2));
+  const a = document.createElement("a"); a.href=uri;
+  a.download = `strength-backup-${todayKey()}.json`; a.click();
+  showToast("Backup downloaded", null);
+}
+
+function downloadCSV() {
+  const dates = allDateKeys();
+  const headers = ["Date","Session","Weight","Push Max","Push Total","Rows","Press","Curls","Tri","Squats","Ruck km","Ruck kg","Ruck min","Run km","Run min","Run type","Arm L","Arm R","Sleep","Energy","Soreness","Stress","Tags","Notes"];
+  const rows = [headers];
+  dates.forEach(k => {
+    const e = getEntry(k);
+    rows.push([k,e.sessionType||"",e.bodyWeight||"",e.pushupsMax||"",e.pushupsTotal||"",e.rows||"",e.press||"",e.curls||"",e.tri||"",e.squats||"",e.ruckDistance||"",e.ruckWeight||"",e.ruckDuration||"",e.runDistance||"",e.runDuration||"",e.runType||"",e.armL||"",e.armR||"",e.sleepHours||"",e.energy||"",e.soreness||"",e.stress||"",(e.tags||[]).join(";"),e.notes||""]);
+  });
+  const csv = rows.map(r=>r.map(c=>'"'+String(c).replaceAll('"','""')+'"').join(",")).join("\n");
+  const uri = "data:text/csv;charset=utf-8,"+encodeURIComponent(csv);
+  const a = document.createElement("a"); a.href=uri;
+  a.download = `strength-export-${todayKey()}.csv`; a.click();
+  showToast("CSV exported", null);
+}
+
+function handleImport(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      // Clear existing entries
+      const oldKeys = allDateKeys();
+      oldKeys.forEach(k => localStorage.removeItem(ENTRY_PREFIX+k));
+      // Import entries
+      const entries = parsed.entries || {};
+      Object.keys(entries).forEach(k => {
+        if (/^\d{4}-\d{2}-\d{2}$/.test(k)) {
+          saveEntry(k, entries[k]);
+        }
+      });
+      if (parsed.goals) saveGoals(parsed.goals);
+      if (parsed.exercises) saveExercises(parsed.exercises);
+      showToast("Import successful", null);
+      showTab("log");
+    } catch(e) {
+      showDialog("Import failed", "The file doesn't look like a valid backup.", [{ label: "OK", action: closeDialog }]);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function confirmClearAll() {
+  showDialog("Delete all data", "This will permanently erase all entries and goals. This cannot be undone.", [
+    { label: "Delete everything", danger: true, action: () => {
+      allDateKeys().forEach(k => localStorage.removeItem(ENTRY_PREFIX+k));
+      localStorage.removeItem(GOALS_KEY);
+      localStorage.removeItem(EXERCISES_KEY);
+      showToast("All data deleted", null);
+      renderLog();
+    }},
+    { label: "Cancel", action: closeDialog }
+  ]);
+}
+
+// ─── Stats helpers ────────────────────────────────────────────────────────────
+
+function latestVal(dates, field) {
+  for (let i=dates.length-1; i>=0; i--) {
+    const v = toNum(getEntry(dates[i])[field]);
+    if (v !== null) return v;
+  }
+  return null;
+}
+
+function firstVal(dates, field) {
+  for (let i=0; i<dates.length; i++) {
+    const v = toNum(getEntry(dates[i])[field]);
+    if (v !== null) return v;
+  }
+  return null;
+}
+
+function bestVal(dates, field) {
+  let best = null, bestDate = null;
+  dates.forEach(k => {
+    const v = toNum(getEntry(k)[field]);
+    if (v !== null && (best === null || v > best)) { best = v; bestDate = k; }
+  });
+  return { val: best, date: bestDate };
+}
+
+function sumVal(dates, field) {
+  return dates.reduce((sum, k) => sum + (toNum(getEntry(k)[field]) || 0), 0);
+}
+
+function latestArmAvg(dates) {
+  for (let i=dates.length-1; i>=0; i--) {
+    const e = getEntry(dates[i]);
+    const l = toNum(e.armL), r = toNum(e.armR);
+    if (l !== null && r !== null) return +((l+r)/2).toFixed(1);
+    if (l !== null) return l;
+    if (r !== null) return r;
+  }
+  return null;
+}
+
+function weeklyTotals() {
+  const wkStart = weekStart(todayKey());
+  const wkEnd   = todayKey();
+  const dates   = allDateKeys().filter(k => k >= wkStart && k <= wkEnd);
+  // Find the push-ups total exercise id (default: ex_pushtotal)
+  const exercises = getExercises();
+  const pushTotalEx = exercises.find(e => e.id === "ex_pushtotal" || e.name.toLowerCase().includes("total"));
+  return {
+    pushups: dates.reduce((s,k) => {
+      const e = getEntry(k);
+      const v = pushTotalEx ? (toNum(e["exv_"+pushTotalEx.id]) || 0) : 0;
+      return s + v;
+    }, 0),
+    ruckKm:  dates.reduce((s,k)=>s+(toNum(getEntry(k).ruckDistance)||0), 0),
+    runKm:   dates.reduce((s,k)=>s+(toNum(getEntry(k).runDistance)||0), 0),
+  };
+}
+
+function monthlyTotal(field) {
+  const mo = monthPrefix(todayKey());
+  const dates = allDateKeys().filter(k => k.startsWith(mo));
+  // If field is "pushupsTotal", map to the dynamic exercise store
+  if (field === "pushupsTotal") {
+    const exercises = getExercises();
+    const pushTotalEx = exercises.find(e => e.id === "ex_pushtotal" || e.name.toLowerCase().includes("total"));
+    if (pushTotalEx) {
+      return dates.reduce((s,k)=>s+(toNum(getEntry(k)["exv_"+pushTotalEx.id])||0), 0);
+    }
+  }
+  return dates.reduce((s,k)=>s+(toNum(getEntry(k)[field])||0), 0);
+}
+
+// ─── Toast ────────────────────────────────────────────────────────────────────
+
+function showToast(message, undoFn) {
+  clearToast();
+  const div = document.createElement("div");
+  div.id = "toast"; div.className = "toast";
+  div.innerHTML = undoFn
+    ? `<span>${escapeHtml(message)}</span><button onclick="undoToast()">Undo</button>`
+    : `<span>${escapeHtml(message)}</span>`;
+  document.body.appendChild(div);
+  state.toast = { message, undoFn };
+  setTimeout(() => {
+    if (document.getElementById("toast")) { clearToast(); }
+  }, 3500);
+}
+
+function clearToast() {
+  state.toast = null;
+  const t = document.getElementById("toast"); if (t) t.remove();
+}
+
+function undoToast() {
+  const fn = state.toast?.undoFn;
+  clearToast(); if (fn) fn();
+}
+
+// ─── Dialog ───────────────────────────────────────────────────────────────────
+
+function showDialog(title, message, buttons) {
+  closeDialog();
+  const overlay = document.createElement("div");
+  overlay.id = "dialog-overlay"; overlay.className = "dialog-overlay";
+  overlay.innerHTML = `
+    <div class="dialog">
+      <div class="dialog-title">${escapeHtml(title)}</div>
+      <div class="dialog-body">${escapeHtml(message)}</div>
+      <div class="dialog-btns">${
+        buttons.map((b,i)=>`<button class="dialog-btn ${b.danger?"danger":""}" onclick="dialogAction(${i})">${escapeHtml(b.label)}</button>`).join("")
+      }</div>
+    </div>`;
+  document.body.appendChild(overlay);
+  state.dialog = { buttons };
+}
+
+function dialogAction(i) {
+  const btn = state.dialog?.buttons[i];
+  if (btn?.action) btn.action();
+  closeDialog();
+}
+
+function closeDialog() {
+  const d = document.getElementById("dialog-overlay"); if (d) d.remove();
+  state.dialog = null;
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+
+showTab("log");
+
+</script>
+</body>
+</html>
